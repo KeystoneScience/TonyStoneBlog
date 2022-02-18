@@ -27,10 +27,10 @@ jobs:
           node-version: 14.x
       - name: Prepare project environment
         if: ${{ steps.project.outputs.deployment-enabled == 'true' }}
-        run: npm install
+        run: npm ci
       - name: Build project
         if: ${{ steps.project.outputs.deployment-enabled == 'true' }}
-        run: npm run build
+        run: npm run export
         env:
           CI: true
           SITE_URL: ${{ steps.project.outputs.site-url }}
@@ -41,7 +41,7 @@ jobs:
           api-key: ${{ secrets.IONOS_API_KEY }}
           bootstrap-deploy: ${{ steps.project.outputs.bootstrap-deploy }}
           branch-id: ${{ steps.project.outputs.branch-id }}
-          dist-folder: build
+          dist-folder: out
           project: ${{ secrets.IONOS_PROJECT_ID }}
           remote-host: ${{ steps.project.outputs.remote-host }}
           service-host: api-us.ionos.space
