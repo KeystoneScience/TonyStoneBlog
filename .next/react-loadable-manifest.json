@@ -1,26 +1,8 @@
 {
   "../components/ClientReload.js -> socket.io-client": {
-    "id": 2488,
+    "id": "./node_modules/socket.io-client/build/esm/index.js",
     "files": [
-      "static/chunks/488.eeab08b0e71f637e.js"
-    ]
-  },
-  "../components/comments/index.js -> @/components/comments/Disqus": {
-    "id": 9970,
-    "files": [
-      "static/chunks/970.e0a81819827af8e1.js"
-    ]
-  },
-  "../components/comments/index.js -> @/components/comments/Giscus": {
-    "id": 6013,
-    "files": [
-      "static/chunks/13.d513c6288e279212.js"
-    ]
-  },
-  "../components/comments/index.js -> @/components/comments/Utterances": {
-    "id": 369,
-    "files": [
-      "static/chunks/369.3fb657943bd81f22.js"
+      "static/chunks/node_modules_socket_io-client_build_esm_index_js.js"
     ]
   }
 }
