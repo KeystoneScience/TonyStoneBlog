@@ -7,13 +7,23 @@
       <language>en-us</language>
       <managingEditor>tony@stonecoldthoughts.com (Tony Stone)</managingEditor>
       <webMaster>tony@stonecoldthoughts.com (Tony Stone)</webMaster>
-      <lastBuildDate>Sat, 19 Feb 2022 00:00:00 GMT</lastBuildDate>
+      <lastBuildDate>Sat, 26 Feb 2022 00:00:00 GMT</lastBuildDate>
       <atom:link href="https://tailwind-nextjs-starter-blog.vercel.app/feed.xml" rel="self" type="application/rss+xml"/>
       
   <item>
-    <guid>https://tailwind-nextjs-starter-blog.vercel.app/blog/2021-11-25</guid>
+    <guid>https://tailwind-nextjs-starter-blog.vercel.app/blog/2022-02-26</guid>
+    <title>Moral Axioms</title>
+    <link>https://tailwind-nextjs-starter-blog.vercel.app/blog/2022-02-26</link>
+    undefined
+    <pubDate>Sat, 26 Feb 2022 00:00:00 GMT</pubDate>
+    <author>tony@stonecoldthoughts.com (Tony Stone)</author>
+    
+  </item>
+
+  <item>
+    <guid>https://tailwind-nextjs-starter-blog.vercel.app/blog/2022-02-19</guid>
     <title>What next?</title>
-    <link>https://tailwind-nextjs-starter-blog.vercel.app/blog/2021-11-25</link>
+    <link>https://tailwind-nextjs-starter-blog.vercel.app/blog/2022-02-19</link>
     undefined
     <pubDate>Sat, 19 Feb 2022 00:00:00 GMT</pubDate>
     <author>tony@stonecoldthoughts.com (Tony Stone)</author>
