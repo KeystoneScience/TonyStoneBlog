@@ -52,7 +52,7 @@ export default function Planner() {
 
   useEffect(() => {
     //save events to local storage
-    //fetchEvents();
+    fetchEvents();
   }, [date]);
 
   async function saveEvents() {
