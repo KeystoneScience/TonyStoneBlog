@@ -340,13 +340,16 @@ function DayPlanner({ events, setEvents, isSaved, saveData }) {
 
   function editEvent(id, field, value) {
     if (field === 'durration') {
+      console.log('EDIT', events);
       value = parseInt(value);
+      const difference = value - events[id].durration;
       events[id].durration = value;
       for (let i = id + 1; i < events.length; i++) {
         if (!events[i].isFixed) {
-          events[i].startTime += value;
+          events[i].startTime += difference;
         }
       }
+      console.log('EDITED', events);
     }
     if (field === 'startTime') {
       value = parseInt(value);
