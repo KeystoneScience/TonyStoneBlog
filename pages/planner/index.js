@@ -74,11 +74,22 @@ export default function Planner() {
         return { ...a };
       });
       setEvents(data.Item.data);
+    } else {
+      setEvents(
+        defaultEvents.map((a) => {
+          return { ...a };
+        })
+      );
     }
   }
 
-  function itterateDate(days) {
-    setDate(new Date(date.setDate(date.getDate() + days)));
+  async function itterateDate(days) {
+    if (!isSaved) {
+      const result = window.confirm('You have unsaved changes. Are you sure you want to continue?');
+      if (result) {
+        setDate(new Date(date.setDate(date.getDate() + days)));
+      }
+    }
   }
 
   return (
@@ -197,10 +208,20 @@ function EventModal(props) {
             justifyContent: 'flex-start',
             alignItems: 'center',
             height: 50,
+            marginTop: props.isMobile ? 20 : 0,
           }}
         >
-          <div style={{ fontSize: 16, fontWeight: '600' }}>
-            Durration:
+          <div
+            style={{
+              fontSize: 16,
+              fontWeight: '600',
+              display: 'flex',
+              flexDirection: props.isMobile ? 'column' : 'row',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            {!props.isMobile && 'Durration:'}
             <input
               style={{ backgroundColor: 'transparent', fontWeight: '600', width: 85 }}
               type="number"
@@ -223,7 +244,7 @@ function EventModal(props) {
         <textarea
           style={{
             marginTop: 20,
-            height: '60%',
+            height: props.isMobile ? '50%' : '60%',
             overflow: 'scroll',
             background: 'transparent',
             width: '100%',
@@ -479,7 +500,7 @@ function TimeIndicator({ currentMinute, scale, isVisible }) {
     <div
       style={{
         position: 'absolute',
-        top: (currentMinute - 30) * scale,
+        top: currentMinute * scale,
         left: 0,
         width: '100%',
         height: '2px',
@@ -512,6 +533,7 @@ function TimeScale({ scale }) {
     '2:30 AM',
     '3:00 AM',
     '3:30 AM',
+    '4:00 AM',
     '4:30 AM',
     '5:00 AM',
     '5:30 AM',
@@ -535,6 +557,7 @@ function TimeScale({ scale }) {
     '2:30 PM',
     '3:00 PM',
     '3:30 PM',
+    '4:00 PM',
     '4:30 PM',
     '5:00 PM',
     '5:30 PM',
