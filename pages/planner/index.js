@@ -430,8 +430,8 @@ function DayPlanner({ events, setEvents, isSaved, saveData }) {
       >
         <div
           style={{
-            width: isMobile ? null : '70%',
-            height: isMobile ? '70%' : null,
+            width: isMobile ? 80 : '70%',
+            height: isMobile ? '80%' : null,
             aspectRatio: 'auto 1/1',
             display: 'flex',
             alignItems: 'center',
@@ -447,8 +447,8 @@ function DayPlanner({ events, setEvents, isSaved, saveData }) {
         </div>
         <div
           style={{
-            width: isMobile ? null : '70%',
-            height: isMobile ? '70%' : null,
+            width: isMobile ? 80 : '70%',
+            height: isMobile ? '80%' : null,
             aspectRatio: 'auto 1/1',
             display: 'flex',
             alignItems: 'center',
@@ -464,8 +464,8 @@ function DayPlanner({ events, setEvents, isSaved, saveData }) {
         </div>
         <div
           style={{
-            width: isMobile ? null : '70%',
-            height: isMobile ? '70%' : null,
+            width: isMobile ? 80 : '70%',
+            height: isMobile ? '80%' : null,
             aspectRatio: 'auto 1/1',
             display: 'flex',
             borderRadius: 100,
