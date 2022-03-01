@@ -89,6 +89,8 @@ export default function Planner() {
       if (result) {
         setDate(new Date(date.setDate(date.getDate() + days)));
       }
+    } else {
+      setDate(new Date(date.setDate(date.getDate() + days)));
     }
   }
 
