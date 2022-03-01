@@ -9,6 +9,7 @@ import {
 } from 'react-icons/ai';
 import { FaFeatherAlt } from 'react-icons/fa';
 import plannerApi from '../api/planner';
+import { useSizeContext } from 'hooks/useSizeContext';
 
 const zeroPad = (num, places) => String(num).padStart(places, '0');
 
@@ -52,7 +53,7 @@ export default function Planner() {
 
   useEffect(() => {
     //save events to local storage
-    fetchEvents();
+    // fetchEvents();
   }, [date]);
 
   async function saveEvents() {
@@ -69,6 +70,9 @@ export default function Planner() {
     const data = await plannerApi.getData(dateString);
     console.log('DATA', data);
     if (data.Item) {
+      lastSavedEvents = data.Item.data.map((a) => {
+        return { ...a };
+      });
       setEvents(data.Item.data);
     }
   }
@@ -109,7 +113,7 @@ function Event(props) {
       style={{
         height: props.durration * props.scale,
         position: 'absolute',
-        width: '93%',
+        width: props.isMobile ? '80%' : '93%',
         top: props.startTime * props.scale,
         backgroundColor: props.isCompleted ? '#00A050' : '#505060',
         borderRadius: 10,
@@ -119,7 +123,7 @@ function Event(props) {
         paddingTop: 5,
         borderWidth: 4,
         borderColor: props.isFixed ? '#0050E0' : 'transparent',
-        marginLeft: '7%',
+        marginLeft: props.isMobile ? '20%' : '7%',
       }}
     >
       <div>{props.title}</div>
@@ -246,35 +250,22 @@ function EventModal(props) {
             onClick={() => props.editEvent(props.id, 'isCompleted')}
             style={{
               backgroundColor: props.isCompleted ? '#D52000' : '#00A050',
-              width: 200,
+              width: props.isMobile ? 100 : 200,
               height: '80%',
               display: 'flex',
               justifyContent: 'center',
               borderRadius: 5,
               alignItems: 'center',
+              textAlign: 'center',
             }}
           >
             {props.isCompleted ? 'Remove Completed Mark' : 'Mark As Completed'}
-          </div>
-
-          <div
-            style={{
-              backgroundColor: '#00A0A0',
-              width: 200,
-              height: '80%',
-              display: 'flex',
-              borderRadius: 5,
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-          >
-            Edit Durration
           </div>
           <div
             onClick={() => props.editEvent(props.id, 'delete')}
             style={{
               backgroundColor: '#D52000',
-              width: 200,
+              width: props.isMobile ? 100 : 200,
               height: '80%',
               display: 'flex',
               borderRadius: 5,
@@ -291,6 +282,8 @@ function EventModal(props) {
 }
 
 function DayPlanner({ events, setEvents, isSaved, saveData }) {
+  const { isMobile, isDesktop, isTablet, width } = useSizeContext();
+
   const height = 14400;
   const scale = (height / 1440) * 0.75;
   const dayPlannerRef = React.useRef();
@@ -384,16 +377,31 @@ function DayPlanner({ events, setEvents, isSaved, saveData }) {
 
   return (
     <div>
+      <div style={{ height: height, position: 'relative' }} ref={dayPlannerRef}>
+        <TimeScale scale={scale} />
+
+        {events.map((event) => (
+          <Event
+            {...event}
+            scale={scale}
+            isMobile={isMobile}
+            onClick={() => {
+              setSelectedModalProps({ ...event });
+            }}
+          />
+        ))}
+        <TimeIndicator currentMinute={currentMinute} scale={scale} isVisible={true} />
+      </div>
       <div
         style={{
           position: 'fixed',
-          width: 150,
-          height: 400,
+          width: isMobile ? '100%' : 150,
+          height: isMobile ? 100 : 400,
           background: '#303040',
-          borderRadius: 10,
+          borderRadius: isMobile ? 0 : 10,
           bottom: 0,
           right: 0,
-          flexDirection: 'column',
+          flexDirection: isMobile ? 'row' : 'column',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-around',
@@ -401,7 +409,8 @@ function DayPlanner({ events, setEvents, isSaved, saveData }) {
       >
         <div
           style={{
-            width: '70%',
+            width: isMobile ? null : '70%',
+            height: isMobile ? '70%' : null,
             aspectRatio: 'auto 1/1',
             display: 'flex',
             alignItems: 'center',
@@ -417,7 +426,8 @@ function DayPlanner({ events, setEvents, isSaved, saveData }) {
         </div>
         <div
           style={{
-            width: '70%',
+            width: isMobile ? null : '70%',
+            height: isMobile ? '70%' : null,
             aspectRatio: 'auto 1/1',
             display: 'flex',
             alignItems: 'center',
@@ -433,7 +443,8 @@ function DayPlanner({ events, setEvents, isSaved, saveData }) {
         </div>
         <div
           style={{
-            width: '70%',
+            width: isMobile ? null : '70%',
+            height: isMobile ? '70%' : null,
             aspectRatio: 'auto 1/1',
             display: 'flex',
             borderRadius: 100,
@@ -449,22 +460,9 @@ function DayPlanner({ events, setEvents, isSaved, saveData }) {
           <AiFillClockCircle fontSize={'250%'} />
         </div>
       </div>
-      <div style={{ height: height, position: 'relative' }} ref={dayPlannerRef}>
-        <TimeScale scale={scale} />
-
-        {events.map((event) => (
-          <Event
-            {...event}
-            scale={scale}
-            onClick={() => {
-              setSelectedModalProps({ ...event });
-            }}
-          />
-        ))}
-        <TimeIndicator currentMinute={currentMinute} scale={scale} isVisible={true} />
-      </div>
       {selectedModalProps && (
         <EventModal
+          isMobile={isMobile}
           {...selectedModalProps}
           makeNull={() => {
             setSelectedModalProps(null);
