@@ -53,7 +53,7 @@ export default function Planner() {
 
   useEffect(() => {
     //save events to local storage
-    fetchEvents();
+    // fetchEvents();
   }, [date]);
 
   async function saveEvents() {
@@ -124,7 +124,7 @@ function Event(props) {
     <div
       onClick={props.onClick}
       style={{
-        height: props.durration * props.scale,
+        height: (props.durration || 5) * props.scale,
         position: 'absolute',
         width: props.isMobile ? '80%' : '93%',
         top: props.startTime * props.scale,
@@ -140,7 +140,7 @@ function Event(props) {
       }}
     >
       <div>{props.title}</div>
-      {props.durration * props.scale > 100 && (
+      {(props.durration || 5) * props.scale > 100 && (
         <div style={{ display: 'flex', alignItems: 'center' }}>{props.description}</div>
       )}
     </div>
@@ -163,7 +163,12 @@ function EventModal(props) {
       }}
     >
       <div
-        onClick={props.makeNull}
+        onClick={() => {
+          if (!props.durration) {
+            props.editEvent(props.id, 'delete');
+          }
+          props.makeNull();
+        }}
         style={{
           position: 'absolute',
           width: '100%',
@@ -225,15 +230,18 @@ function EventModal(props) {
           >
             {!props.isMobile && 'Durration:'}
             <input
-              style={{ backgroundColor: 'transparent', fontWeight: '600', width: 85 }}
+              style={{
+                backgroundColor:
+                  props.durration && props.durration >= 5 ? 'transparent' : '#D50000',
+                fontWeight: '600',
+                width: 85,
+              }}
               type="number"
-              onChange={(ev) =>
-                props.editEvent(
-                  props.id,
-                  'durration',
-                  ev.target.value ? (ev.target.value < 5 ? 5 : ev.target.value) : 5
-                )
-              }
+              onChange={(ev) => {
+                console.log(ev.target.value);
+                console.log(parseInt(ev.target.value, 10));
+                props.editEvent(props.id, 'durration', parseInt(ev.target.value, 10));
+              }}
               value={props.durration}
             ></input>
             minutes
@@ -243,6 +251,7 @@ function EventModal(props) {
             {zeroPad(props.startTime % 60, 2)}
           </div>
         </div>
+        Description:
         <textarea
           style={{
             marginTop: 20,
@@ -250,6 +259,7 @@ function EventModal(props) {
             overflow: 'scroll',
             background: 'transparent',
             width: '100%',
+            placeholder: 'Description',
           }}
           onChange={(ev) => props.editEvent(props.id, 'description', ev.target.value)}
           value={props.description}
@@ -328,7 +338,7 @@ function DayPlanner({ events, setEvents, isSaved, saveData }) {
     const newEvent = {
       id: events.length,
       title: 'TITLE',
-      description: 'DESCRIPTION',
+      description: '',
       startTime: events[events.length - 1].startTime + events[events.length - 1].durration,
       durration: 5,
       isFixed: false,
@@ -340,7 +350,6 @@ function DayPlanner({ events, setEvents, isSaved, saveData }) {
 
   function editEvent(id, field, value) {
     if (field === 'durration') {
-      console.log('EDIT', events);
       value = parseInt(value);
       const difference = value - events[id].durration;
       events[id].durration = value;
@@ -349,7 +358,6 @@ function DayPlanner({ events, setEvents, isSaved, saveData }) {
           events[i].startTime += difference;
         }
       }
-      console.log('EDITED', events);
     }
     if (field === 'startTime') {
       value = parseInt(value);
