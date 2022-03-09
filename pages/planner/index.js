@@ -6,6 +6,8 @@ import {
   AiFillUnlock,
   AiFillClockCircle,
   AiFillSave,
+  AiOutlineDown,
+  AiOutlineUp,
 } from 'react-icons/ai';
 import { FaFeatherAlt } from 'react-icons/fa';
 import plannerApi from '../api/planner';
@@ -53,7 +55,7 @@ export default function Planner() {
 
   useEffect(() => {
     //save events to local storage
-    // fetchEvents();
+    fetchEvents();
   }, [date]);
 
   async function saveEvents() {
@@ -190,7 +192,23 @@ function EventModal(props) {
           alignItems: 'flex-start',
         }}
       >
-        <div style={{ position: 'absolute', top: 5, right: 5 }}>
+        <div
+          style={{
+            position: 'absolute',
+            top: 5,
+            right: 5,
+            flexDirection: 'row',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <AiOutlineDown fontSize={30} onClick={() => props.editEvent(props.id, 'down')} />
+          <AiOutlineUp
+            fontSize={30}
+            style={{ marginRight: 20, marginLeft: 10 }}
+            onClick={() => props.editEvent(props.id, 'up')}
+          />
           {props.isFixed ? (
             <AiFillLock fontSize={30} onClick={() => props.editEvent(props.id, 'isFixed', false)} />
           ) : (
@@ -379,6 +397,34 @@ function DayPlanner({ events, setEvents, isSaved, saveData }) {
     }
     if (field === 'isFixed') {
       events[id].isFixed = !events[id].isFixed;
+    }
+    if (field === 'down') {
+      if (id < events.length - 1) {
+        const currentEvent = { ...events[id] };
+        const nextEvent = { ...events[id + 1] };
+        currentEvent.id = id + 1;
+        nextEvent.id = id;
+        events[id] = nextEvent;
+        events[id + 1] = currentEvent;
+        events[id + 1].startTime = currentEvent.startTime + nextEvent.durration;
+        events[id].startTime -= events[id + 1].durration;
+      } else {
+        return;
+      }
+    }
+    if (field === 'up') {
+      if (id > 0) {
+        const currentEvent = { ...events[id] };
+        const previousEvent = { ...events[id - 1] };
+        currentEvent.id = id - 1;
+        previousEvent.id = id;
+        events[id] = previousEvent;
+        events[id - 1] = currentEvent;
+        events[id - 1].startTime = currentEvent.startTime - previousEvent.durration;
+        events[id].startTime += events[id - 1].durration;
+      } else {
+        return;
+      }
     }
     if (field === 'delete') {
       const durrationToDelete = events[id].durration;
