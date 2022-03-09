@@ -37,6 +37,7 @@ export default function Planner() {
 
   //get current date
   const [date, setDate] = React.useState(new Date());
+  const [isLoading, setIsLoading] = React.useState(false);
   const [events, setEvents] = React.useState(
     defaultEvents.map((a) => {
       return { ...a };
@@ -59,15 +60,18 @@ export default function Planner() {
   }, [date]);
 
   async function saveEvents() {
+    setIsLoading(true);
     const dateString = date.toISOString().split('T')[0];
     const data = await plannerApi.postData(dateString, events);
     lastSavedEvents = events.map((a) => {
       return { ...a };
     });
     setIsSaved(true);
+    setIsLoading(false);
   }
 
   async function fetchEvents() {
+    setIsLoading(true);
     const dateString = date.toISOString().split('T')[0];
     const data = await plannerApi.getData(dateString);
     console.log('DATA', data);
@@ -83,6 +87,7 @@ export default function Planner() {
         })
       );
     }
+    setIsLoading(false);
   }
 
   async function itterateDate(days) {
@@ -116,6 +121,7 @@ export default function Planner() {
         setEvents={(ev) => setEvents(ev)}
         isSaved={isSaved}
         saveData={saveEvents}
+        isLoading={isLoading}
       />
     </div>
   );
@@ -332,7 +338,7 @@ function EventModal(props) {
   );
 }
 
-function DayPlanner({ events, setEvents, isSaved, saveData }) {
+function DayPlanner({ events, setEvents, isSaved, saveData, isLoading }) {
   const { isMobile, isDesktop, isTablet, width } = useSizeContext();
 
   const height = 14400;
@@ -408,6 +414,7 @@ function DayPlanner({ events, setEvents, isSaved, saveData }) {
         events[id + 1] = currentEvent;
         events[id + 1].startTime = currentEvent.startTime + nextEvent.durration;
         events[id].startTime -= events[id + 1].durration;
+        setSelectedModalProps({ ...events[id + 1] });
       } else {
         return;
       }
@@ -422,6 +429,7 @@ function DayPlanner({ events, setEvents, isSaved, saveData }) {
         events[id - 1] = currentEvent;
         events[id - 1].startTime = currentEvent.startTime - previousEvent.durration;
         events[id].startTime += events[id - 1].durration;
+        setSelectedModalProps({ ...events[id - 1] });
       } else {
         return;
       }
@@ -496,13 +504,18 @@ function DayPlanner({ events, setEvents, isSaved, saveData }) {
             alignItems: 'center',
             justifyContent: 'center',
             borderRadius: 100,
-            background: isSaved ? '#A0A0A0' : '#00A050',
+            fontSize: 20,
+            fontWeight: '800',
+            background: isSaved || isLoading ? '#A0A0A0' : '#00A050',
           }}
           onClick={() => {
+            if (isSaved || isLoading) {
+              return;
+            }
             saveData();
           }}
         >
-          <AiFillSave fontSize={'250%'} />
+          {!isLoading ? <AiFillSave fontSize={'250%'} /> : '. . .'}
         </div>
         <div
           style={{
