@@ -13,6 +13,9 @@ import { FaFeatherAlt } from 'react-icons/fa';
 import plannerApi from '../api/planner';
 import { useSizeContext } from 'hooks/useSizeContext';
 
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 const zeroPad = (num, places) => String(num).padStart(places, '0');
 
 const defaultEvents = [
@@ -415,7 +418,14 @@ function DayPlanner({ events, setEvents, isSaved, saveData, isLoading }) {
         events[id + 1].startTime = currentEvent.startTime + nextEvent.durration;
         events[id].startTime -= events[id + 1].durration;
         setSelectedModalProps({ ...events[id + 1] });
+        setEvents([...events]);
+        if (id === events.length - 2) {
+          toast('Newest event.');
+        }
+        toast('Next Event: "' + events[id + 2].title + '"');
+        return;
       } else {
+        toast('Newest event cannot be moved down.');
         return;
       }
     }
@@ -430,7 +440,15 @@ function DayPlanner({ events, setEvents, isSaved, saveData, isLoading }) {
         events[id - 1].startTime = currentEvent.startTime - previousEvent.durration;
         events[id].startTime += events[id - 1].durration;
         setSelectedModalProps({ ...events[id - 1] });
+        setEvents([...events]);
+        if (id == 1) {
+          toast('Earliest event.');
+          return;
+        }
+        toast('Previous Event: "' + events[id - 2].title + '"');
+        return;
       } else {
+        toast('Earliest event cannot be moved up.');
         return;
       }
     }
@@ -479,6 +497,7 @@ function DayPlanner({ events, setEvents, isSaved, saveData, isLoading }) {
           />
         ))}
         <TimeIndicator currentMinute={currentMinute} scale={scale} isVisible={true} />
+        <ToastContainer />
       </div>
       <div
         style={{
