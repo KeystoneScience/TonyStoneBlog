@@ -497,7 +497,7 @@ function DayPlanner({ events, setEvents, isSaved, saveData, isLoading }) {
           />
         ))}
         <TimeIndicator currentMinute={currentMinute} scale={scale} isVisible={true} />
-        <ToastContainer />
+        <ToastContainer autoClose={600} newestOnTop={true} enableMultiContainer={true} />
       </div>
       <div
         style={{
